@@ -21,7 +21,6 @@ Or install it yourself as:
     $ gem install parse_dhcp
 
 ## Usage
-
 __1. Read file__
 
 * The first, create object dhcp with param: the path to file config
@@ -37,6 +36,7 @@ dhcp.subnets
 #Result
 => ["192.168.1.0", "10.152.187.0"]
 ```
+
 * Get netmask
 
 ```ruby
@@ -45,7 +45,9 @@ dhcp.netmasks
 => ["255.255.255.0"]
 ```
 
+
 * Get list pool
+
 ```ruby
 dhcp.pools
 #Result
@@ -63,7 +65,9 @@ dhcp.pools
     "fixed-address"=>"10.152.187.2"}}]
 ```
 
+
 * Get list option
+
 ```ruby
 dhcp.options
 #Result
