@@ -14,7 +14,7 @@ module Parse_Dhcp
 
     # Read file config return Net. Net is hash
     def self.read_file(path)
-
+                
       str = ""
       count = 0
       counter = 0
