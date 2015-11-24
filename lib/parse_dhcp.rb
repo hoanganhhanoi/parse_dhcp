@@ -22,7 +22,7 @@ module Parse_Dhcp
 
       begin
         if path.nil? || path.empty?
-          path = "parse_dhcp/default_dhcp.conf"
+          path = "../examples/default_dhcp.conf"
         end
         file = File.new("#{path}", "r")
         while (line = file.gets)
@@ -40,6 +40,7 @@ module Parse_Dhcp
                                           "option" => "",
                                           "pool"   => "" 
                                         }
+
               end
 
               # Filter subnet 
