@@ -1,11 +1,19 @@
+require_relative "parse_dhcp/net.rb"
 
 module Parse_Dhcp
   class DHCP
-    # Create Hash net
-    @@Net = Hash.new
+
+    attr_accessor :datas, :net
+
+    # Function constructor of DHCP
+    def initialize(path)
+      @datas = Parse_Dhcp::DHCP.read_file(path)
+      @array_net = []
+
+    end
 
     # Read file config return Net. Net is hash
-    def self.read_file
+    def self.read_file(path)
 
       str = ""
       count = 0
@@ -13,7 +21,10 @@ module Parse_Dhcp
       object = Hash.new
 
       begin
-        file = File.new("parse_dhcp/dhcp.conf", "r")
+        if path.nil? || path.empty?
+          path = "parse_dhcp/default_dhcp.conf"
+        end
+        file = File.new("#{path}", "r")
         while (line = file.gets)
           # Set new net
           if counter == 0 && !line.eql?("\n")
@@ -65,13 +76,44 @@ module Parse_Dhcp
     end
 
     # Get subnet and netmask
-    def self.get_subnet(subnet)
+    def self.get_sub_mask(subnet)
       if subnet.nil?
         return false
       else
         array = subnet["subnet"].split
         address = { "#{array[0]}" => array[1],
                     "#{array[2]}" => array[3] }
+      end
+    end
+
+    def self.get_subnet(subnet)
+      if subnet.nil?
+        return false
+      else
+        array = subnet["subnet"].split
+        address = array[1]
+      end
+    end
+
+    def self.get_netmask(subnet)
+      if subnet.nil?
+        return false
+      else
+        array = subnet["subnet"].split
+        address = array[3]
+      end
+    end
+
+    def self.get_authoritative(subnet)
+      if subnet.nil?
+        return false
+      else
+        authori = Parse_Dhcp::DHCP.get_list_option(subnet)
+        if !authori["authoritative"].nil?
+          return true
+        else
+          return false
+        end
       end
     end
 
@@ -89,6 +131,8 @@ module Parse_Dhcp
           array = substring.split
           if array.include?("option")
             option["#{array[1]}"] = "#{array[2]}"
+          elsif array.include?("authoritative")
+            option["#{array[0]}"] = true
           else
             option["#{array[0]}"] = "#{array[1]}"
           end
@@ -107,7 +151,7 @@ module Parse_Dhcp
       if subnet.nil?
         return false
       else
-        pool = {}
+        pool = { "hosts" => {} }
         count = 0
         counter = 0
         check_first = true
@@ -125,10 +169,10 @@ module Parse_Dhcp
               check_first = false
               count   += 1
               counter -= 1
-              pool["host#{count}"] = {}
+              pool["hosts"]["host#{count}"] = {}
               if counter == -1
                 item = line.split
-                pool["host#{count}"]["#{item[0]}"] = item [1]
+                pool["hosts"]["host#{count}"]["#{item[0]}"] = item [1]
                 checkhost = false
               end
             elsif last.eql?("}")
@@ -152,9 +196,9 @@ module Parse_Dhcp
               substring = line.gsub("\;","")
               item = substring.split
               if item.include?("hardware")
-                pool["host#{count}"]["#{item[0]}_#{item[1]}"] = item[2]
+                pool["hosts"]["host#{count}"]["#{item[0]}_#{item[1]}"] = item[2]
               else
-                pool["host#{count}"]["#{item[0]}"] = item[1]
+                pool["hosts"]["host#{count}"]["#{item[0]}"] = item[1]
               end
             end
           end
@@ -163,13 +207,80 @@ module Parse_Dhcp
         
         # Delete trash element
         [*1..count].each do |i|
-          pool["host#{i}"].tap {|key| 
+          pool["hosts"]["host#{i}"].tap {|key| 
             key.delete("}")
           }
         end
 
         return pool
       end
+    end
+
+    # Get list subnet
+    def subnets
+      subnet = []
+      index = 0
+      while index < @datas.count
+        index += 1
+        subnet << Parse_Dhcp::DHCP.get_subnet(@datas["net#{index}"])
+      end
+      return subnet
+    end
+
+    # Get list netmask
+    def netmasks
+      netmask = []
+      index = 0
+      while index < @datas.count
+        index += 1
+        netmask << Parse_Dhcp::DHCP.get_netmask(@datas["net#{index}"])
+      end
+      return netmask
+    end
+
+    # Get list option
+    def options
+      option = []
+      index = 0
+      while index < @datas.count
+        index += 1
+        option << Parse_Dhcp::DHCP.get_list_option(@datas["net#{index}"])
+      end
+      return option
+    end
+
+    # Get value authoritative
+    def authoritative
+      authori = []
+      index = 0
+      while index < @datas.count
+        index += 1
+        authori << Parse_Dhcp::DHCP.get_authoritative(@datas["net#{index}"])
+      end
+      return authori
+    end
+
+    # Get pool
+    def pools
+      pool  = []
+      index = 0
+      while index < @datas.count
+        index += 1
+        data = Parse_Dhcp::DHCP.get_pool(@datas["net#{index}"])
+        i = 0
+        tmp_hash = {}
+        while i < data["hosts"].count
+          i += 1
+          tmp_hash["#{i}"] = data["hosts"]["host#{i}"]
+        end
+        pool << tmp_hash
+      end
+      return pool
+    end
+
+    # Return data in file
+    def data
+      @datas
     end
   end
 end
