@@ -30,7 +30,7 @@ module Parse_Dhcp
             element = line.strip.split
             if !element.include?("#")
               # Set new net
-              if counter == 0 && !line.eql?("\n")
+              if counter == 0
                 count += 1
                 checkoption = false 
                 checkhost = false
@@ -40,33 +40,32 @@ module Parse_Dhcp
                                           "option" => "",
                                           "pool"   => "" 
                                         }
+
               end
 
               # Filter subnet 
-              if !line.eql?("\n")
-                last = line.strip.slice(-1,1)
-                checkoption = true if !checksub
-                checkhost = true if !checkpool
-                checkpool = true if 
-                if last.eql?("{")
-                  counter -= 1
-                  if counter == -1
-                    object["net#{count}"]["subnet"] = line.gsub("\{\n","")
-                    checksub = false
-                  end
-                  if counter == -2
-                    checkpool = false
-                  end
-                elsif last.eql?("}")
-                  counter += 1
+              last = line.strip.slice(-1,1)
+              checkoption = true if !checksub
+              checkhost = true if !checkpool
+              checkpool = true if 
+              if last.eql?("{")
+                counter -= 1
+                if counter == -1
+                  object["net#{count}"]["subnet"] = line.gsub("\{\n","")
+                  checksub = false
                 end
+                if counter == -2
+                  checkpool = false
+                end
+              elsif last.eql?("}")
+                counter += 1
+              end
 
-                # Get data
-                if counter == -1 && checkoption
-                  object["net#{count}"]["option"] = object["net#{count}"]["option"] + "#{line}" 
-                elsif checkhost
-                  object["net#{count}"]["pool"]   = object["net#{count}"]["pool"] + "#{line}"
-                end
+              # Get data
+              if counter == -1 && checkoption
+                object["net#{count}"]["option"] = object["net#{count}"]["option"] + "#{line}" 
+              elsif checkhost
+                object["net#{count}"]["pool"]   = object["net#{count}"]["pool"] + "#{line}"
               end
             end
           end
