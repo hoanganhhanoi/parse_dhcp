@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-*The first, create object dhcp with param: the path to file config
+The first, create object dhcp with param: the path to file config
 
 ```ruby
 dhcp = Parse_Dhcp::DHCP.new(path)
@@ -91,7 +91,7 @@ Get range, allow in pool
 ```ruby
 
 ```
-*Write file
+* Write file
 
 Create object net, then set attribute for object. Then call method write_file in module WriteConf with param: "path/file_name"
 ```ruby
