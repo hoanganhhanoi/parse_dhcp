@@ -22,20 +22,22 @@ Or install it yourself as:
 
 ## Usage
 
-*The first, create object dhcp with param: the path to file config
+__1. Read file__
+
+* The first, create object dhcp with param: the path to file config
 
 ```ruby
 dhcp = Parse_Dhcp::DHCP.new(path)
 ```
 
-Get subnet
+* Get subnet
 
 ```ruby
 dhcp.subnets
 #Result
 => ["192.168.1.0", "10.152.187.0"]
 ```
-Get netmask
+* Get netmask
 
 ```ruby
 dhcp.netmasks
@@ -43,7 +45,7 @@ dhcp.netmasks
 => ["255.255.255.0"]
 ```
 
-Get list pool
+* Get list pool
 ```ruby
 dhcp.pools
 #Result
@@ -61,7 +63,7 @@ dhcp.pools
     "fixed-address"=>"10.152.187.2"}}]
 ```
 
-Get list option
+* Get list option
 ```ruby
 dhcp.options
 #Result
@@ -87,11 +89,11 @@ dhcp.options
   "max-lease-time"=>"86400"}]
 ```
 
-Get range, allow in pool
+* Get range, allow in pool
 ```ruby
 
 ```
-*Write file
+__2. Write file__
 
 Create object net, then set attribute for object. Then call method write_file in module WriteConf with param: "path/file_name"
 ```ruby
