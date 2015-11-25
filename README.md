@@ -197,17 +197,19 @@ array_net[0]
        @hardware_ethernet="DD:GH:DF:E5:F7:D7",
        @host="bla1">,
       #<Host:0xb98d88a8
-        
+
 ```
 
 __2. Write file__
 
-Create object net, then set attribute for object. Then call method write_file in module WriteConf with param: "path/file_name"
+Create object net, then set attribute for object. Then call method write_file in module WriteConf with param: "path/file_name", "array_net"
 ```ruby
-result = WriteConf.write_file(path/file_name)
-#Success
+result = dhcp.write(path/file_name, array_net)
+# or
+result = WriteConf.write_file(path/file_name, array_net)
+# Success
   => true
-#Fail
+# Fail
  => false 
 ```
 ## Development
