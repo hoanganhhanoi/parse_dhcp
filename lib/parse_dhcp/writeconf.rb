@@ -47,7 +47,7 @@ module WriteConf
         value.each do |h|
           data += "\s\s\s\shost #{h.host} {\n"
           data += "\s\s\s\s\s\shardware ethernet #{h.hardware_ethernet};\n"
-          data += "\s\s\s\s\s\sfixed-address #{h.fix_address}\n"
+          data += "\s\s\s\s\s\sfixed-address #{h.fixed_address}\n"
           data += "\s\s\s\s}\n" 
         end
       else

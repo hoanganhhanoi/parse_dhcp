@@ -1,4 +1,5 @@
 require_relative "parse_dhcp/net.rb"
+require_relative "parse_dhcp/host.rb"
 
 module Parse_Dhcp
   class DHCP
@@ -122,31 +123,55 @@ module Parse_Dhcp
     end
 
     # Get all config option of subnet
-    def self.get_list_option(subnet)
+    def self.get_list_option(subnet, condition = false)
       if subnet.nil?
         return false
       else
         option = {}
+        differ = {}
         i = 0
         line_number = subnet["option"].lines.count
-
-        while i < line_number do
-          substring = subnet["option"].lines[i].gsub("\;","")
-          array = substring.split
-          if array.include?("option")
-            option["#{array[1]}"] = "#{array[2]}"
-          elsif array.include?("authoritative")
-            option["#{array[0]}"] = true
-          else
-            option["#{array[0]}"] = "#{array[1]}"
+        if !condition
+          while i < line_number do
+            if !subnet["option"].lines[i].strip.eql?("")
+              substring = subnet["option"].lines[i].gsub("\;","")
+              array = substring.split
+              if array.include?("option")
+                option["#{array[1]}"] = "#{array[2]}"
+              elsif array.include?("authoritative")
+                option["#{array[0]}"] = true
+              else
+                option["#{array[0]}"] = "#{array[1]}"
+              end
+            end
+            i += 1
           end
-          i += 1
+
+          # Delete trash element  
+          option.delete("}")
+
+          return option
+        else 
+          while i < line_number do 
+            if !subnet["option"].lines[i].strip.eql?("")
+              substring = subnet["option"].lines[i].gsub("\;","")
+              array = substring.split
+              if array.include?("option")
+                option["#{array[1]}"] = "#{array[2]}"
+              elsif array.include?("authoritative")
+                differ["#{array[0]}"] = true
+              else
+                differ["#{array[0]}"] = "#{array[1]}"
+              end
+            end
+            i += 1
+          end
+
+          # Delete trash element  
+          differ.delete("}")
+
+          return [option, differ]
         end
-
-        # Delete trash element  
-        option.delete("}")
-
-        return option
       end
     end
 
@@ -325,6 +350,39 @@ module Parse_Dhcp
     # Return data in file
     def data
       @datas
+    end
+
+    # Set data in object
+    def net
+
+      i = 0
+      while i < @datas.count
+        i += 1
+        new_net = Net.new 
+        new_net.subnet  = Parse_Dhcp::DHCP.get_subnet(@datas["net#{i}"])
+        new_net.netmask = Parse_Dhcp::DHCP.get_netmask(@datas["net#{i}"])
+
+        list_option = Parse_Dhcp::DHCP.get_list_option(@datas["net#{i}"], true)
+        new_net.option  = list_option[0]
+        new_net.differ  = list_option[1]
+
+        pool        = Parse_Dhcp::DHCP.get_pool(@datas["net#{i}"])
+        new_net.pool["range"] = pool["range"]
+        new_net.pool["allow"] = pool["allow"]
+        new_net.pool["denny"] = pool["denny"]
+        # set host
+        index = 0 
+        while index < pool["hosts"].count
+          index += 1
+          host_name = pool["hosts"]["host#{index}"]["host"]
+          ethernet  = pool["hosts"]["host#{index}"]["hardware_ethernet"]
+          address   = pool["hosts"]["host#{index}"]["fixed-address"] 
+          host      = Host.new(host_name, ethernet, address)
+          new_net.pool["hosts"] << host
+        end
+        @array_net << new_net
+      end
+      return @array_net
     end
   end
 end
