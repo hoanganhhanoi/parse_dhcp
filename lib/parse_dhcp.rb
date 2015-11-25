@@ -282,6 +282,46 @@ module Parse_Dhcp
       return pool
     end
 
+    # Get range
+    def ranges
+      range = []
+      index = 0
+      while index < @datas.count
+        index += 1
+        data = Parse_Dhcp::DHCP.get_pool(@datas["net#{index}"])
+        range << "#{data["range"]["min"]} #{data["range"]["max"]}"
+      end
+      return range
+    end
+
+    # Get allow
+    def allow
+      allow = []
+      index = 0
+      while index < @datas.count
+        index += 1
+        data = Parse_Dhcp::DHCP.get_pool(@datas["net#{index}"])
+        if !data["allow"].nil?
+          allow << data["allow"]
+        end
+      end
+      return allow
+    end
+
+    # Get allow
+    def denny
+      denny = []
+      index = 0
+      while index < @datas.count
+        index += 1
+        data = Parse_Dhcp::DHCP.get_pool(@datas["net#{index}"])
+        if !data["denny"].nil?
+          denny << data["denny"]
+        end
+      end
+      return denny
+    end
+
     # Return data in file
     def data
       @datas

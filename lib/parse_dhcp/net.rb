@@ -12,6 +12,7 @@ class Net
     @differ = {}
     @pool = { "range" => "",
               "allow" => "", 
+              "denny" => "",
               "hosts" => []
             }
   end
@@ -48,7 +49,7 @@ class Net
     net2.differ['max-lease-tim'] = "86400"
     # Set pool
     net2.pool["range"] = { "min" => "192.168.25.20", "max" => "192.168.25.200" }
-    net2.pool["allow"] = "unknown-clients"
+    net2.pool["denny"] = "unknown-clients"
     net2.pool["hosts"] << Host.new("bla1", "DD:GH:DF:E5:F7:D7", "192.168.1.2")
     net2.pool["hosts"] << Host.new("bla2", "00:JJ:YU:38:AC:45", "192.168.1.20")
     return [net1,net2]
