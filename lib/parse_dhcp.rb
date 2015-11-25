@@ -1,3 +1,4 @@
+require_relative "parse_dhcp/writeconf.rb"
 require_relative "parse_dhcp/net.rb"
 require_relative "parse_dhcp/host.rb"
 
@@ -383,6 +384,13 @@ module Parse_Dhcp
         @array_net << new_net
       end
       return @array_net
+    end
+
+    # Write file
+    def write(file_name, arr_net)
+      if !arr_net.empty?
+        result = WriteConf.write_file(file_name, arr_net)
+      end
     end
   end
 end
