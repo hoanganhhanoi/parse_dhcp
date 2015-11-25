@@ -21,6 +21,7 @@ Or install it yourself as:
     $ gem install parse_dhcp
 
 ## Usage
+__1. Read file__
 
 __With file dhcp.conf__
 
@@ -126,12 +127,10 @@ dhcp.pools
     "fixed-address"=>"10.152.187.2"}}]
 ```
 
-
 * Get list option
 
 ```ruby
 dhcp.options
-#Result
 => [{"routers"=>"192.168.1.1",
   "subnet-mask"=>"255.255.255.0",
   "broadcast-address"=>"192.168.1.255",
@@ -169,7 +168,8 @@ dhcp.denny
 => ["unknown-clients"]
 ```
 
-* Get data in to object array
+* Get data to object array
+
 ```ruby
 array_net = dhcp.net
 # Result
@@ -203,6 +203,7 @@ array_net[0]
 __2. Write file__
 
 Create object net, then set attribute for object. Then call method write_file in module WriteConf with param: "path/file_name", "array_net"
+
 ```ruby
 result = dhcp.write(path/file_name, array_net)
 # or
@@ -210,7 +211,7 @@ result = WriteConf.write_file(path/file_name, array_net)
 # Success
   => true
 # Fail
- => false 
+  => false 
 ```
 ## Development
 
@@ -226,4 +227,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

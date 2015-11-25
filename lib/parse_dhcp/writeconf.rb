@@ -26,7 +26,7 @@ module WriteConf
 
     # set option
     net.option.each do |key, value|
-      data += "\s\s#{key}\s\s\s\s\s\s\s\s\s #{value};\n"
+      data += "\s\soption #{key}\s\s\s\s\s\s\s\s\s #{value};\n"
     end
 
     # set differ
