@@ -132,8 +132,7 @@ dhcp.pools
 ```ruby
 dhcp.options
 #Result
-=> [{""=>"",
-  "routers"=>"192.168.1.1",
+=> [{"routers"=>"192.168.1.1",
   "subnet-mask"=>"255.255.255.0",
   "broadcast-address"=>"192.168.1.255",
   "domain-name-servers"=>"194.168.4.100",
@@ -145,10 +144,10 @@ dhcp.options
   "authoritative"=>true},
  {"routers"=>"10.152.187.1",
   "subnet-mask"=>"255.255.255.0",
-  "broadcast-address"=>"10.152.187.255",
-  "domain-name-servers"=>"194.168.4.100",
-  "ntp-servers"=>"10.152.187.1",
-  "netbios-name-servers"=>"10.152.187.1",
+  "broadcast-address"=>"10.150.168.255",
+  "domain-name-servers"=>"192.168.4.101",
+  "ntp-servers"=>"10.152.187.10",
+  "netbios-name-servers"=>"10.152.187.12",
   "netbios-node-type"=>"2",
   "default-lease-time"=>"86400",
   "max-lease-time"=>"86400"}]
@@ -169,6 +168,38 @@ dhcp.denny
 #Result
 => ["unknown-clients"]
 ```
+
+* Get data in to object array
+```ruby
+array_net = dhcp.net
+# Result
+array_net[0]
+=> [#<Net:0xb98d1594
+  @differ=
+   {"default-lease-time"=>"60400",
+    "max-lease-time"=>"60400",
+    "authoritative"=>true},
+  @netmask="255.255.255.0",
+  @option=
+   {"routers"=>"192.168.1.1",
+    "subnet-mask"=>"255.255.255.0",
+    "broadcast-address"=>"192.168.1.255",
+    "domain-name-servers"=>"194.168.4.100",
+    "ntp-servers"=>"192.168.1.1",
+    "netbios-name-servers"=>"192.168.1.1"},
+  @pool=
+   {"range"=>{"min"=>"192.168.25.20", "max"=>"192.168.25.200"},
+    "allow"=>"unknown-clients",
+    "denny"=>nil,
+    "hosts"=>
+     [#<Host:0xb98d8a24
+       @fix_address="192.168.1.2",
+       @hardware_ethernet="DD:GH:DF:E5:F7:D7",
+       @host="bla1">,
+      #<Host:0xb98d88a8
+        
+```
+
 __2. Write file__
 
 Create object net, then set attribute for object. Then call method write_file in module WriteConf with param: "path/file_name"

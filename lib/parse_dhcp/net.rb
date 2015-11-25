@@ -30,7 +30,7 @@ class Net
     net1.option["domain-name-servers"] = "194.168.4.100"
     net1.differ["authoritative"] = "true"
     net1.differ["default-lease-time"] = "2"
-    net1.differ['max-lease-tim'] = "86400"
+    net1.differ['max-lease-time'] = "86400"
     # Set pool
     net1.pool["range"] = { "min" => "192.168.25.20", "max" => "192.168.25.200" }
     net1.pool["allow"] = "unknown-clients"
@@ -46,7 +46,7 @@ class Net
     net2.option["broadcast-address"] = "192.168.1.255"
     net2.option["domain-name-servers"] = "194.168.4.100"
     net2.differ["default-lease-time"] = "2"
-    net2.differ['max-lease-tim'] = "86400"
+    net2.differ['max-lease-time'] = "86400"
     # Set pool
     net2.pool["range"] = { "min" => "192.168.25.20", "max" => "192.168.25.200" }
     net2.pool["denny"] = "unknown-clients"
